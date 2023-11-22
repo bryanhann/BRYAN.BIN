@@ -1,1 +1,34 @@
-steve.bh.help $0 $*
+#!/usr/bin/env bash
+
+export BRYAN_SRC=git@github.com:bryanhann/BRYAN
+export BRYAN_ROOT=${HOME}/.BRYAN
+
+THIS=$(readlink $0)
+export BRYAN_BIN=$(dirname $THIS)/bin
+
+usage () {
+    echo USAGE:
+    echo "    bryan COMMAND"
+    echo COMMANDS:
+    for name in $(ls ${BRYAN_BIN}); do
+        echo "    $name"
+    done
+}
+
+install () {
+    [ ! -d ${BRYAN_ROOT} ] && git clone ${BRYAN_SRC} ${BRYAN_ROOT}
+    [ ! -d ${BRYAN_ROOT} ] && echo FATAL: cannot find BRYAN_ROOT
+    [ ! -d ${BRYAN_ROOT} ] && exit 99
+}
+
+main () {
+    install
+    [ ! $1. == . ] && [ -f ${BRYAN_BIN}/${1} ] && {
+        ${BRYAN_BIN}/"$@"
+        exit $?
+    } || {
+        usage
+    }
+}
+
+main "$@"
